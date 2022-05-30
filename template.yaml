@@ -63,8 +63,6 @@ Resources:
         IgnorePublicAcls: true
         BlockPublicPolicy: true
         RestrictPublicBuckets: true
-      WebsiteConfiguration:
-        IndexDocument: index.html
   WebsiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -89,6 +87,8 @@ Resources:
   #         HostedZoneId: !Ref HostedZoneId
   #       - DomainName: !Sub 'www.${DomainName}'
   #         HostedZoneId: !Ref HostedZoneId
+  
+  #TODO: Test with REACT Router paths & use CloudFront redirect if necessary
   CFDistribution:
     Type: AWS::CloudFront::Distribution
     # TODO-FF: Can add bucket for CloudFront logs at a later stage
@@ -107,7 +107,7 @@ Resources:
         #   - !Sub 'www.${DomainName}'
         Origins:
           - Id: !Sub 'S3-${DomainName}'
-            DomainName: !GetAtt WebsiteBucket.WebsiteURL
+            DomainName: !Sub '${DomainName}.s3.amazonaws.com'
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CFOriginAccessIdentity}'        
         DefaultCacheBehavior:
