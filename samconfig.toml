@@ -1,0 +1,7 @@
+[default.deploy.parameters]
+stack_name = "dev-yipcode"
+tags = "Name=\"yipcode-stack\"
+
+[prod.deploy.parameters]
+stack_name = "prod-yipcode"
+tags = "Name=\"yipcode-stack\"
