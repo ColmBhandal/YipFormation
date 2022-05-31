@@ -16,6 +16,9 @@ Parameters:
       - PriceClass_100
       - PriceClass_200
     Description: Price class for CloudFront distribution.
+  YipFrontBucketName:
+    Type: String
+    Description: Name of the S3 Bucket from which to server the static frontend. Note - this can't contain dots or it'll confuse the TLS cert checking.
   # TODO-FF: Can add something like this in when hosting is set up
   # HostedZoneId:
   #   Type: String
@@ -48,7 +51,7 @@ Resources:
   WebsiteBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref DomainName
+      BucketName: !Ref YipFrontBucketName
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
@@ -104,12 +107,12 @@ Resources:
         #   - !Ref DomainName
         #   - !Sub 'www.${DomainName}'
         Origins:
-          - Id: !Sub 'S3-${DomainName}'
-            DomainName: !Sub '${DomainName}.s3.amazonaws.com'
+          - Id: !Sub 'S3-${YipFrontBucketName}'
+            DomainName: !Sub '${YipFrontBucketName}.s3.amazonaws.com'
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CFOriginAccessIdentity}'        
         DefaultCacheBehavior:
-          TargetOriginId: !Sub 'S3-${DomainName}'
+          TargetOriginId: !Sub 'S3-${YipFrontBucketName}'
           Compress: true
           # CachingOptimized managed cache policy
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6

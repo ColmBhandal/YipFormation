@@ -2,9 +2,9 @@ version=0.1
 [default.deploy.parameters]
 stack_name = "dev-yipcode"
 tags = "Name=\"yipcode-stack\""
-parameter_overrides = "DomainName=dev.yipcode.com CFDistributionPriceClass=PriceClass_100"
+parameter_overrides = "DomainName=dev.yipcode.com CFDistributionPriceClass=PriceClass_100 YipFrontBucketName=dev-yipfront-bucket"
 
 [prod.deploy.parameters]
 stack_name = "prod-yipcode"
 tags = "Name=\"yipcode-stack\""
-parameter_overrides = "DomainName=yipcode.com CFDistributionPriceClass=PriceClass_All"
+parameter_overrides = "DomainName=yipcode.com CFDistributionPriceClass=PriceClass_All YipFrontBucketName=yipfront-bucket"
