@@ -6,13 +6,11 @@ Parameters:
   DomainName:
     Type: String
     Description: Root domain name for the static website. Change this based on the target deployment environment.
-    Default: dev.yipcode.com
     AllowedValues:
       - yipcode.com
       - dev.yipcode.com
   CFDistributionPriceClass:
     Type: String
-    Default: PriceClass_100
     AllowedValues:
       - PriceClass_All
       - PriceClass_100
