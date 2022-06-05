@@ -192,7 +192,7 @@ Resources:
     Properties:
       Handler: index.handler
       Runtime: nodejs16.x
-      CodeUri: function/hello/.
+      CodeUri: functions/hello/.
       Description: Hello-world code calling the Lambda API and logging some event/env details.
       Timeout: 10
       # Function's execution role

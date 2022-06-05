@@ -4,6 +4,8 @@ stack_name = "dev-yipcode"
 tags = "Name=\"yipcode-stack\""
 confirm_changeset=true
 parameter_overrides = "DomainName=dev.yipcode.com CFDistributionPriceClass=PriceClass_100 YipFrontBucketName=dev-yipfront-bucket"
+resolve_s3=true
+capabilities="CAPABILITY_IAM"
 
 [prod.deploy.parameters]
 stack_name = "prod-yipcode"
