@@ -1,0 +1,15 @@
+{
+    "name": "yipformation",
+    "version": "1.0.0",
+    "private": true,
+    "devDependencies": {
+      "aws-sdk": "^2.1148.0",
+      "jest": "^28.1.0"
+    },
+    "dependencies": {
+      "aws-xray-sdk-core": "^3.3.6"
+    },
+    "scripts": {
+      "test": "jest"
+    }
+  }
