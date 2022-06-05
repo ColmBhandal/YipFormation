@@ -181,3 +181,30 @@ Resources:
   #           DNSName: !GetAtt CFDistribution.DomainName
   #           EvaluateTargetHealth: false
   #           HostedZoneId: Z2FDTNDATAQYW2
+  api:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: api
+      TracingEnabled: true
+      OpenApiVersion: 3.0.3
+  function:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs16.x
+      CodeUri: function/hello/.
+      Description: Hello-world code calling the Lambda API and logging some event/env details.
+      Timeout: 10
+      # Function's execution role
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+      Tracing: Active
+      Events:
+        getEndpoint:
+          Type: Api
+          Properties:
+            RestApiId: !Ref api
+            Path: /
+            Method: GET
