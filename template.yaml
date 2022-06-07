@@ -19,10 +19,12 @@ Parameters:
   YipFrontBucketName:
     Type: String
     Description: Name of the S3 Bucket from which to server the static frontend. Note - this can't contain dots or it'll confuse the TLS cert checking.
-  # TODO-FF: Can add something like this in when hosting is set up
-  # HostedZoneId:
-  #   Type: String
-  #   Description: Hosted zone ID
+  HostedZoneStackName:
+    Type: String
+    Description: The name of the stack that contains the hosted zone.
+    AllowedValues:
+      - dev-yipcode-zone
+      - prod-yipcode-zone      
 
 Resources:
   Frontend:
@@ -33,6 +35,8 @@ Resources:
         DomainName: !Ref DomainName
         CFDistributionPriceClass: !Ref CFDistributionPriceClass
         YipFrontBucketName: !Ref YipFrontBucketName
+        HostedZoneId: !ImportValue
+          "Fn::Sub": "${HostedZoneStackName}-HostedZoneID"
   Backend:
     Type: AWS::Serverless::Application
     Properties:
