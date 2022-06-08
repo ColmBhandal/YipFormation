@@ -1,6 +1,6 @@
 version=0.1
 [default.deploy.parameters]
-stack_name = "dev-yipcode"
+stack_name = "dev-yipcode-frontend"
 tags = "Name=\"yipcode-stack\""
 confirm_changeset=true
 parameter_overrides = "DomainName=dev.yipcode.com CFDistributionPriceClass=PriceClass_100 YipFrontBucketName=dev-yipfront-bucket HostedZoneStackName=dev-yipcode-zone"
@@ -8,7 +8,7 @@ resolve_s3=true
 capabilities="CAPABILITY_IAM CAPABILITY_AUTO_EXPAND"
 
 [prod.deploy.parameters]
-stack_name = "prod-yipcode"
+stack_name = "prod-yipcode-frontend"
 tags = "Name=\"yipcode-stack\""
 confirm_changeset=true
 parameter_overrides = "DomainName=yipcode.com CFDistributionPriceClass=PriceClass_All YipFrontBucketName=yipfront-bucket HostedZoneStackName=prod-yipcode-zone"
