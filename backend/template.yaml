@@ -11,12 +11,12 @@ Resources:
       OpenApiVersion: 3.0.3
     Auth:
       ResourcePolicy:
-        CustomStatements: [{
-                            "Effect": "Allow",
-                            "Principal": "*",
-                            "Action": "execute-api:Invoke",
-                            "Resource": "execute-api:/*"
-                          }]
+        CustomStatements: {
+            Effect: 'Allow',
+            Action: 'execute-api:Invoke', 
+            Resource: ['execute-api:/*/*/*'],
+            Principal: '*'
+          }
   function:
     Type: AWS::Serverless::Function
     Properties:
