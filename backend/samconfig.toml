@@ -4,10 +4,12 @@ version=0.1
 confirm_changeset=true
 tags = "Name=\"yipcode-stack\""
 stack_name = "dev-yipcode-backend"
-parameter_overrides = ""
+resolve_s3=true
+capabilities="CAPABILITY_IAM"
+# parameter_overrides = ""
 
 [prod.deploy.parameters]
 confirm_changeset=true
 tags = "Name=\"yipcode-stack\""
 stack_name = "prod-yipcode-backend"
-parameter_overrides = ""
+# parameter_overrides = ""
