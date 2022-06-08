@@ -9,13 +9,14 @@ Resources:
       StageName: api
       TracingEnabled: true
       OpenApiVersion: 3.0.3
-    Policy: 
-      Version: "2012-10-17"
-      Statement:
-        - Effect: Allow
-          Action: 'execute-api:Invoke'
-          Principal: '*'
-          Resource: !Sub 'execute-api:/*'
+    Auth:
+      ResourcePolicy:
+        CustomStatements: [{
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": "execute-api:Invoke",
+                            "Resource": "execute-api:/*"
+                          }]
   function:
     Type: AWS::Serverless::Function
     Properties:
