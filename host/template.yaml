@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Template for creating an empty hosted zone with a given domain name.
+
+Parameters:
+  DomainName:
+    Type: String
+    Description: Root domain name for the hosted zone.
+    AllowedValues:
+      - yipcode.com
+      - dev.yipcode.com
+
+Resources:
+  Zone: 
+    Type: "AWS::Route53::HostedZone"
+    Properties: 
+      HostedZoneConfig: 
+        Comment: !Sub 'Hosted zone for ${DomainName}'
+      Name: !Ref DomainName
+
+Outputs:
+  HostedZoneId:
+    Description: The hosted zone ID for this hosted zone
+    Value:
+      'Fn::GetAtt':
+        - Zone
+        - Id
+    Export:
+      Name:
+        'Fn::Sub': '${AWS::StackName}-HostedZoneID'

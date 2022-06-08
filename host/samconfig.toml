@@ -1,0 +1,11 @@
+version=0.1
+
+[default.deploy.parameters]
+confirm_changeset=true
+stack_name = "dev-yipcode-zone"
+parameter_overrides = "DomainName=dev.yipcode.com"
+
+[prod.deploy.parameters]
+confirm_changeset=true
+stack_name = "prod-yipcode-zone"
+parameter_overrides = "DomainName=yipcode.com"

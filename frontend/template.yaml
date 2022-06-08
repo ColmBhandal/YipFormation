@@ -19,9 +19,12 @@ Parameters:
   YipFrontBucketName:
     Type: String
     Description: Name of the S3 Bucket from which to server the static frontend. Note - this can't contain dots or it'll confuse the TLS cert checking.
-  HostedZoneId:
+  HostedZoneStackName:
     Type: String
-    Description: Hosted zone ID
+    Description: The name of the stack that contains the hosted zone.
+    AllowedValues:
+      - dev-yipcode-zone
+      - prod-yipcode-zone  
 
 Resources:
   CFOriginAccessIdentity:
@@ -83,9 +86,11 @@ Resources:
       ValidationMethod: DNS
       DomainValidationOptions:
         - DomainName: !Ref DomainName
-          HostedZoneId: !Ref HostedZoneId
+          HostedZoneId: !ImportValue
+            "Fn::Sub": "${HostedZoneStackName}-HostedZoneID"
         - DomainName: !Sub 'www.${DomainName}'
-          HostedZoneId: !Ref HostedZoneId
+          HostedZoneId: !ImportValue
+            "Fn::Sub": "${HostedZoneStackName}-HostedZoneID"
   RewriteRequestSpaFunction:
     Type: AWS::CloudFront::Function
     Properties:
@@ -148,7 +153,8 @@ Resources:
     Type: AWS::Route53::RecordSetGroup
     Properties:
       Comment: !Sub 'DNS records for ${DomainName}'
-      HostedZoneId: !Ref HostedZoneId
+      HostedZoneId: !ImportValue
+          "Fn::Sub": "${HostedZoneStackName}-HostedZoneID"
       RecordSets:
         - Name: !Ref DomainName
           Type: A
