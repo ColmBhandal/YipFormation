@@ -14,10 +14,16 @@ Parameters:
     Description: The name of the stack that contains the hosted zone.
     AllowedValues:
       - dev-yipcode-zone
-      - prod-yipcode-zone  
+      - prod-yipcode-zone
+  CognitoDomainPrefix:
+    Type: String
+    Description: Custom prefix for the Cognito domain name. Note- the remainder of the domain name will be AWS-generated.
+    AllowedValues:
+      - dev-yipcode-auth
+      - yipcode-auth
 
 Resources:
-  WebCertificate:
+  ApiWebCertificate:
       Type: AWS::CertificateManager::Certificate
       Properties:
         DomainName: !Sub "api.${RootDomainName}"
@@ -26,6 +32,7 @@ Resources:
           - DomainName: !Sub "api.${RootDomainName}"
             HostedZoneId: !ImportValue
               "Fn::Sub": "${HostedZoneStackName}-HostedZoneID"
+
   Api:
     Type: AWS::Serverless::Api
     Properties:
@@ -42,11 +49,12 @@ Resources:
             Principal: '*'
       Domain:
         DomainName: !Sub "api.${RootDomainName}"
-        CertificateArn: !Ref WebCertificate
+        CertificateArn: !Ref ApiWebCertificate
         EndpointConfiguration: EDGE
         Route53:
           HostedZoneId: !ImportValue
             "Fn::Sub": "${HostedZoneStackName}-HostedZoneID"
+
   Function:
     Type: AWS::Serverless::Function
     Properties:
@@ -68,3 +76,32 @@ Resources:
             RestApiId: !Ref Api
             Path: /
             Method: GET
+
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Ref RootDomainName
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      UsernameAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: false
+      EmailConfiguration:
+        EmailSendingAccount: COGNITO_DEFAULT
+
+  CognitoDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Ref CognitoDomainPrefix
+      UserPoolId: !Ref CognitoUserPool
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ClientName: "StandardClient"
+      GenerateSecret: false
