@@ -2,8 +2,31 @@ AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
 Description: SAM template for backend YipCode resources.
 
+Parameters:
+  RootDomainName:
+    Type: String
+    Description: Root domain name for the hosted zone into which we will deploy this workload.
+    AllowedValues:
+      - yipcode.com
+      - dev.yipcode.com
+  HostedZoneStackName:
+    Type: String
+    Description: The name of the stack that contains the hosted zone.
+    AllowedValues:
+      - dev-yipcode-zone
+      - prod-yipcode-zone  
+
 Resources:
-  api:
+  WebCertificate:
+      Type: AWS::CertificateManager::Certificate
+      Properties:
+        DomainName: !Sub "api.${RootDomainName}"
+        ValidationMethod: DNS
+        DomainValidationOptions:
+          - DomainName: !Sub "api.${RootDomainName}"
+            HostedZoneId: !ImportValue
+              "Fn::Sub": "${HostedZoneStackName}-HostedZoneID"
+  Api:
     Type: AWS::Serverless::Api
     Properties:
       StageName: api
@@ -16,8 +39,15 @@ Resources:
             Action: execute-api:Invoke
             Resource:
             - execute-api:/*/*/*
-            Principal: '*'          
-  function:
+            Principal: '*'
+      Domain:
+        DomainName: !Sub "api.${RootDomainName}"
+        CertificateArn: !Ref WebCertificate
+        EndpointConfiguration: EDGE
+        Route53:
+          HostedZoneId: !ImportValue
+            "Fn::Sub": "${HostedZoneStackName}-HostedZoneID"
+  Function:
     Type: AWS::Serverless::Function
     Properties:
       Handler: index.handler
@@ -35,6 +65,6 @@ Resources:
         getEndpoint:
           Type: Api
           Properties:
-            RestApiId: !Ref api
+            RestApiId: !Ref Api
             Path: /
             Method: GET
