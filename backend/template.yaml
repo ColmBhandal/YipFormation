@@ -104,4 +104,13 @@ Resources:
     Properties:
       UserPoolId: !Ref CognitoUserPool
       ClientName: "StandardClient"
-      GenerateSecret: false
+      GenerateSecret: false        
+      AllowedOAuthFlowsUserPoolClient: true      
+      CallbackURLs:
+        - http://localhost:3000
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - openid
+      SupportedIdentityProviders:
+        - COGNITO    
