@@ -107,7 +107,7 @@ Resources:
       GenerateSecret: false        
       AllowedOAuthFlowsUserPoolClient: true      
       CallbackURLs:
-        - http://localhost:3000
+        - http://localhost:8000
       AllowedOAuthFlows:
         - code
       AllowedOAuthScopes:
