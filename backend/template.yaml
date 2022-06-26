@@ -21,6 +21,12 @@ Parameters:
     AllowedValues:
       - dev-yipcode-auth
       - yipcode-auth
+  FrontOrigin:
+    Type: String
+    Description: The origin URL of YipFront
+    AllowedValues:    
+      - https://yipcode.com
+      - https://dev.yipcode.com
 
 Resources:
   ApiWebCertificate:
@@ -108,6 +114,7 @@ Resources:
       AllowedOAuthFlowsUserPoolClient: true      
       CallbackURLs:
         - http://localhost:8000/auth/handle/index.html
+        - !Sub "${FrontOrigin}/auth/handle/index.html"
       AllowedOAuthFlows:
         - code
       AllowedOAuthScopes:
