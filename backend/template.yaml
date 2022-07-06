@@ -53,6 +53,15 @@ Resources:
             Resource:
             - execute-api:/*/*/*
             Principal: '*'
+        Authorizers:          
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
+            Identity:
+              Header: Authorization
+              ValidationExpression: Bearer.*
+              ReauthorizeEvery: 300
+        DefaultAuthorizer: CognitoAuthorizer
+          
       Domain:
         DomainName: !Sub "api.${RootDomainName}"
         CertificateArn: !Ref ApiWebCertificate
