@@ -1,23 +1,16 @@
-const AWS = require('aws-sdk')
-
-// Create client outside of handler to reuse
-const lambda = new AWS.Lambda()
-
-// Handler
-exports.handler = async function(event, context) {
+export async function handler(event, context) {
   console.log('## ENVIRONMENT VARIABLES: ' + serialize(process.env))
   console.log('## CONTEXT: ' + serialize(context))
   console.log('## EVENT: ' + serialize(event))
   try {
-    let accountSettings = await getAccountSettings()
-    return formatResponse(serialize(accountSettings.AccountUsage))
+    return formatResponse(serialize({yipCodes: ["Yc1", "Yc2", "Yc3"]}))
   } catch(error) {
     return formatError(error)
   }
 }
 
-var formatResponse = function(body){
-  var response = {
+const formatResponse = function(body){
+  const response = {
     "statusCode": 200,
     "headers": {
       "Content-Type": "application/json"
@@ -31,8 +24,8 @@ var formatResponse = function(body){
   return response
 }
 
-var formatError = function(error){
-  var response = {
+const formatError = function(error){
+  const response = {
     "statusCode": error.statusCode,
     "headers": {
       "Content-Type": "text/plain",
@@ -43,11 +36,7 @@ var formatError = function(error){
   }
   return response
 }
-// Use SDK client
-var getAccountSettings = function(){
-  return lambda.getAccountSettings().promise()
-}
 
-var serialize = function(object) {
+const serialize = function(object) {
   return JSON.stringify(object, null, 2)
 }
