@@ -28,6 +28,13 @@ Parameters:
       - yipcode.com
       - dev.yipcode.com
 
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'POST, GET, OPTIONS'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
+
 Resources:
   ApiWebCertificate:
       Type: AWS::CertificateManager::Certificate
@@ -59,7 +66,8 @@ Resources:
             Identity:
               Header: Authorization
               ReauthorizeEvery: 300
-        DefaultAuthorizer: CognitoAuthorizer          
+        DefaultAuthorizer: CognitoAuthorizer
+        AddDefaultAuthorizerToCorsPreflight: False
       Domain:
         DomainName: !Sub "api.${RootDomainName}"
         CertificateArn: !Ref ApiWebCertificate
@@ -68,10 +76,9 @@ Resources:
           HostedZoneId: !ImportValue
             "Fn::Sub": "${HostedZoneStackName}-HostedZoneID"
       Cors:
-        AllowMethods: "'POST, GET'"
+        AllowMethods: "'POST, GET, OPTIONS'"
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
-
 
   YipcodesGetFunction:
     Type: AWS::Serverless::Function
