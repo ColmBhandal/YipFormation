@@ -58,7 +58,6 @@ Resources:
             UserPoolArn: !GetAtt CognitoUserPool.Arn
             Identity:
               Header: Authorization
-              ValidationExpression: Bearer.*
               ReauthorizeEvery: 300
         DefaultAuthorizer: CognitoAuthorizer
           
