@@ -1,4 +1,4 @@
-export async function handler(event, context) {
+exports.handler = async (event, context) => {
   console.log('## ENVIRONMENT VARIABLES: ' + serialize(process.env))
   console.log('## CONTEXT: ' + serialize(context))
   console.log('## EVENT: ' + serialize(event))
