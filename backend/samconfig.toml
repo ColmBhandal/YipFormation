@@ -6,10 +6,10 @@ tags = "Name=\"yipcode-stack\""
 stack_name = "dev-yipcode-backend"
 resolve_s3=true
 capabilities="CAPABILITY_IAM"
-parameter_overrides = "RootDomainName=dev.yipcode.com HostedZoneStackName=dev-yipcode-zone CognitoDomainPrefix=dev-yipcode-auth FrontOrigin=https://dev.yipcode.com"
+parameter_overrides = "RootDomainName=dev.yipcode.com HostedZoneStackName=dev-yipcode-zone CognitoDomainPrefix=dev-yipcode-auth FrontOrigin=dev.yipcode.com"
 
 [prod.deploy.parameters]
 confirm_changeset=true
 tags = "Name=\"yipcode-stack\""
 stack_name = "prod-yipcode-backend"
-# parameter_overrides = "FrontOrigin=https://yipcode.com"
+# parameter_overrides = "FrontOrigin=yipcode.com"
