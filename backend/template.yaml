@@ -31,9 +31,9 @@ Parameters:
 Globals:
   Api:
     Cors:
-      AllowMethods: "'POST, GET, OPTIONS'"
       AllowHeaders: "'*'"
       AllowOrigin: "'*'"
+      AllowMethods: "'POST, GET, OPTIONS'"
 
 Resources:
   ApiWebCertificate:
@@ -75,10 +75,6 @@ Resources:
         Route53:
           HostedZoneId: !ImportValue
             "Fn::Sub": "${HostedZoneStackName}-HostedZoneID"
-      Cors:
-        AllowMethods: "'POST, GET, OPTIONS'"
-        AllowHeaders: "'*'"
-        AllowOrigin: "'*'"
 
   YipcodesGetFunction:
     Type: AWS::Serverless::Function
