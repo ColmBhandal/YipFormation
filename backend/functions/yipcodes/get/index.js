@@ -13,12 +13,12 @@ const formatResponse = function(body){
   const response = {
     "statusCode": 200,
     "headers": {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Headers" : "*",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET"
     },
     "isBase64Encoded": false,
-    "multiValueHeaders": { 
-      "X-Custom-Header": ["My value", "My other value"],
-    },
     "body": body
   }
   return response
@@ -28,8 +28,7 @@ const formatError = function(error){
   const response = {
     "statusCode": error.statusCode,
     "headers": {
-      "Content-Type": "text/plain",
-      "x-amzn-ErrorType": error.code
+      "Content-Type": "text/plain"
     },
     "isBase64Encoded": false,
     "body": error.code + ": " + error.message
