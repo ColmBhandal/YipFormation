@@ -94,7 +94,7 @@ Resources:
         - AWSXrayWriteOnlyAccess
       Tracing: Active
       Events:
-        getEndpoint:
+        Get:
           Type: Api
           Properties:
             RestApiId: !Ref Api
