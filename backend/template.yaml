@@ -137,4 +137,11 @@ Resources:
       AllowedOAuthScopes:
         - openid
       SupportedIdentityProviders:
-        - COGNITO    
+        - COGNITO
+      RefreshTokenValidity: 3600      
+      AccessTokenValidity: 3600
+      IdTokenValidity: 3600
+      TokenValidityUnits:
+        AccessToken: "seconds"
+        IdToken: "seconds"
+        RefreshToken: "seconds"
