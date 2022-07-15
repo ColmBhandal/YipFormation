@@ -53,13 +53,6 @@ Resources:
       TracingEnabled: true
       OpenApiVersion: 3.0.3
       Auth:
-        ResourcePolicy:
-          CustomStatements:
-            Effect: Allow
-            Action: execute-api:Invoke
-            Resource:
-            - execute-api:/*/*/*
-            Principal: '*'
         Authorizers:          
           CognitoAuthorizer:
             UserPoolArn: !GetAtt CognitoUserPool.Arn
