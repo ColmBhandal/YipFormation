@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "sourceMap": false,
+    "esModuleInterop": true,
+    "allowJs": false,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "module": "commonjs",
+    "target": "ES2022",
+    "outDir": "./functions/build"
+  },
+  "include": ["./functions/src/**/*.ts", "./functions/src/**/package.json"]
+}
