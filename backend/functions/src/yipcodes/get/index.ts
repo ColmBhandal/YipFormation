@@ -1,14 +1,16 @@
-export const handler = async (event, context) => {  
+import { APIGatewayProxyWithCognitoAuthorizerHandler } from "aws-lambda"
+
+export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event, context) => {  
   console.log('## CONTEXT: ' + serialize(context))
   console.log('## EVENT: ' + serialize(event))
   try {
     return formatResponse(serialize({yipCodes: ["Yc1", "Yc2", "Yc3"]}))
   } catch(error) {
-    return formatError(error)
+    return internalServerErrorResponse
   }
 }
 
-const formatResponse = function(body){
+const formatResponse = function(body: string){
   const response = {
     "statusCode": 200,
     "headers": {
@@ -23,18 +25,16 @@ const formatResponse = function(body){
   return response
 }
 
-const formatError = function(error){
-  const response = {
-    "statusCode": error.statusCode,
+const internalServerErrorResponse = 
+{
+    "statusCode": 500,
     "headers": {
       "Content-Type": "text/plain"
     },
     "isBase64Encoded": false,
-    "body": error.code + ": " + error.message
-  }
-  return response
+    "body": "Internal Server Error"
 }
 
-const serialize = function(object) {
-  return JSON.stringify(object)
+const serialize = function(obj: any) {
+  return JSON.stringify(obj)
 }

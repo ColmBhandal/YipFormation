@@ -1,6 +1,7 @@
 {
     "devDependencies": {
-      "typescript": "4.7.4"
+      "typescript": "4.7.4",
+      "@types/aws-lambda": "8.10.101"
     },
     "scripts": {      
       "transpile": "tsc"
