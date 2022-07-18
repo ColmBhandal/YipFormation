@@ -4,7 +4,6 @@
     "esModuleInterop": true,
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
