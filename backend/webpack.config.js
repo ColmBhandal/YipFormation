@@ -4,9 +4,11 @@ const AwsSamPlugin = require("aws-sam-webpack-plugin");
 const awsSamPlugin = new AwsSamPlugin({outFile: "index"});
 
 module.exports = {
+
+    devtool: false,
     
     entry: () => awsSamPlugin.entry(),
-    
+
     output: {
         filename: (chunkData) => awsSamPlugin.filename(chunkData),
         libraryTarget: "commonjs2",

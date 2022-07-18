@@ -11,5 +11,12 @@
     },
     "dependencies": {
         "aws-sdk": "2.1176.0"
+    },
+    "scripts": {
+      "clean": "rimraf .aws-sam .vscode",
+      "prebuildLocal": "rimraf .aws-sam .vscode",
+      "buildLocal": "NODE_ENV=development webpack-cli",
+      "prebuildProd": "rimraf .aws-sam .vscode",
+      "buildProd": "NODE_ENV=production webpack-cli"
     }
 }

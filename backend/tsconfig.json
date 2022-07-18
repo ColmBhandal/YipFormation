@@ -12,11 +12,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "rootDir": "./functions/src",
-    "outDir": "./functions/transpiled",
     "resolveJsonModule": true,
     "strict": true,
     "sourceMap": false,
-    "target": "ES2022",
+    "target": "ES2022"
   },
   "include": ["./functions/src/**/*.ts", "./functions/src/**/package.json"]
 }
