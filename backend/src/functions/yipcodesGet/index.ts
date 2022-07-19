@@ -1,8 +1,10 @@
 import { APIGatewayProxyWithCognitoAuthorizerHandler } from "aws-lambda"
+import { assumeRole } from "../../util/assumeRole"
 
 export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event, context) => {  
+  assumeRole()
   console.log('## CONTEXT: ' + serialize(context))
-  console.log('## EVENT: ' + serialize(event))
+  console.log('## EVENT: ' + serialize(event))  
   try {
     return formatResponse(serialize({yipCodes: ["Yc1", "Yc2", "Yc3"]}))
   } catch(error) {
