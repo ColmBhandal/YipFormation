@@ -27,6 +27,11 @@ Parameters:
     AllowedValues:    
       - yipcode.com
       - dev.yipcode.com
+  #Defaults
+  LambdaReadUserDataRoleName:
+    Type: String
+    Description: Role name for the lambda read user data role
+    Default: ReadUserData
 
 Globals:
   Api:
@@ -89,6 +94,35 @@ Resources:
             RestApiId: !Ref Api
             Path: /yipcodes
             Method: GET
+      Tags:
+        "AllowedRoles": !Sub "${LambdaReadUserDataRoleName}"
+
+  LambdaReadUserDataRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref LambdaReadUserDataRoleName        
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+              - 'sts:TagSession'
+            Condition:
+              Null:
+                'aws:RequestTag/CognitoUserSub': 'false'
+              'ForAllValues:StringEquals':
+                'aws:TagKeys': CognitoUserSub
+              StringLike:
+                'aws:ResourceTag/AllowedRoles': !Sub ".*${LambdaReadUserDataRoleName}.*"              
+
+      Path: /Lambda/
+      #TODO: Change this to inline policy
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
   CognitoUserPool:
     Type: AWS::Cognito::UserPool
@@ -138,3 +172,4 @@ Resources:
         AccessToken: "seconds"
         IdToken: "seconds"
         RefreshToken: "seconds"
+
