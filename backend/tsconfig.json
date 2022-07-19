@@ -4,7 +4,6 @@
     "esModuleInterop": true,
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
@@ -12,12 +11,11 @@
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "rootDir": "./functions/src",
-    "outDir": "./functions/transpiled",
+    "rootDir": "src",
     "resolveJsonModule": true,
     "strict": true,
     "sourceMap": false,
-    "target": "ES2022",
+    "target": "ES2022"
   },
-  "include": ["./functions/src/**/*.ts", "./functions/src/**/package.json"]
+  "include": ["src/**/*.ts", "src/**/package.json"]
 }

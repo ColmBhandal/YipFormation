@@ -74,7 +74,7 @@ Resources:
     Properties:
       Handler: index.handler
       Runtime: nodejs16.x
-      CodeUri: ./functions/transpiled/yipcodes/get
+      CodeUri: ./src/functions/yipcodesGet
       Description: Get all YipCodes for the given user
       Timeout: 10
       Policies:
