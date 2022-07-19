@@ -18,9 +18,11 @@ module.exports = {
     // Non-MVP: Investigate do we want this
     //devtool: "source-map",
 
-    // An imported "foo" missing an extension should resolve to "foo.ts"
+    // Try to resolve to a TS file first, if not, try a JS file.
+    // We can't only support TS here, because webpack needs to pack not just the code in this project, but also all dependencies
+    // The dependencies are out of our control and may include JS, rather than TS, files    
     resolve: {
-        extensions: [".ts"],
+        extensions: [".ts", ".js"],
     },
 
     target: "node",
