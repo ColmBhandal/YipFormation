@@ -14,9 +14,7 @@
     },
     "scripts": {
       "clean": "rimraf .aws-sam .vscode",
-      "prebuildLocal": "rimraf .aws-sam .vscode",
-      "buildLocal": "NODE_ENV=development webpack-cli",
-      "prebuildProd": "rimraf .aws-sam .vscode",
-      "buildProd": "NODE_ENV=production webpack-cli"
+      "prebuild": "rimraf .aws-sam .vscode",
+      "build": "NODE_ENV=production webpack-cli"
     }
 }
