@@ -1,8 +1,8 @@
 import { APIGatewayProxyWithCognitoAuthorizerHandler } from "aws-lambda"
-import { assumeRole } from "../../util/assumeRole"
+import { assumeRoleInCallerAccount, RoleName } from "../../util/assumeRole"
 
-export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event, context) => {  
-  assumeRole()
+export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event, context) => {   
+  await assumeRoleInCallerAccount(RoleName.ReadUserData)
   console.log('## CONTEXT: ' + serialize(context))
   console.log('## EVENT: ' + serialize(event))  
   try {
