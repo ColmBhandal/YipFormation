@@ -27,7 +27,7 @@ function assumeRole(roleName: RoleName, accountNum: string){
 
     const params = {
         RoleArn: roleArn,
-        //Non-MVP: Consider adding role session names for better traceability of actions: RoleSessionName: "session1",
+        RoleSessionName: `assumedRole_${roleName}`,
         //Non-MVP: Think about tweaking duration or allowing it to be changed.
         //For now, fixed duration of a few seconds for each lambda seesm reasonable
         //We don't expect lambdas to take very long at all
