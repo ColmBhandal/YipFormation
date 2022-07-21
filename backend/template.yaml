@@ -112,12 +112,12 @@ Resources:
               - 'sts:AssumeRole'
               - 'sts:TagSession'
             Condition:
-              Null:
-                'aws:RequestTag/CognitoUserSub': 'false'
-              'ForAllValues:StringEquals':
-                'aws:TagKeys': CognitoUserSub
+              'Null':
+                aws:RequestTag/CognitoUserSub: false
+              ForAllValues:StringEquals:
+                aws:TagKeys: CognitoUserSub
               StringLike:
-                'aws:ResourceTag/AllowedRoles': !Sub ".*${LambdaReadUserDataRoleName}.*"              
+                aws:ResourceTag/AllowedRoles: !Sub ".*${LambdaReadUserDataRoleName}.*"              
 
       Path: /Lambda/
       #TODO: Change this to inline policy
