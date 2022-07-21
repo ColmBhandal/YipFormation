@@ -27,9 +27,10 @@ module.exports = {
 
     target: "node",
 
-    // AWS recommends always including the aws-sdk packages in your Lambda package, even though the SDK is always available in the lambda runtime.
-    // However, adding these packages to the externals list causes them to be excluded from webpack and significantly reduces the bundle size
-    externals: ["aws-sdk", "@aws-sdk/client-sts"],
+    // AWS recommends always including the aws-sdk package in your Lambda package, even though the SDK is always available in the lambda runtime.
+    // They recommend this so that your code's runtime behaviour is always predicatable and controllable by you
+    // However, adding this package to the externals list causes it to be excluded from webpack and significantly reduces the bundle size
+    externals: ["aws-sdk"],
 
     mode: process.env.NODE_ENV || "production",
 
