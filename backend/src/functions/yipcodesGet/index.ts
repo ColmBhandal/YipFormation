@@ -2,9 +2,10 @@ import { APIGatewayProxyWithCognitoAuthorizerHandler } from "aws-lambda"
 import { assumeRoleInCallerAccount, RoleName } from "../../util/assumeRole"
 
 export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event, context) => {   
-  await assumeRoleInCallerAccount(RoleName.ReadUserData)
-  console.log('## CONTEXT: ' + serialize(context))
-  console.log('## EVENT: ' + serialize(event))  
+  const tempCredentials = await assumeRoleInCallerAccount(RoleName.ReadUserData)
+  console.log("Credentials expiration: " + tempCredentials.Credentials?.Expiration)
+  console.log('## FUNCTION NAME: ' + serialize(context.functionName))
+  console.log('## EVENT PATH: ' + serialize(event.path))  
   try {
     return formatResponse(serialize({yipCodes: ["Yc1", "Yc2", "Yc3"]}))
   } catch(error) {
