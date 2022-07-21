@@ -39,4 +39,8 @@ module.exports = {
     },
 
     plugins: [awsSamPlugin],
+    
+    optimization: {
+        minimize: false
+     },
 };
