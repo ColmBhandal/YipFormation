@@ -1,13 +1,13 @@
-import { AssumeRoleCommand } from "@aws-sdk/client-sts";
-import { sts, stsClient } from "./sts";
+import { AWSError } from "aws-sdk";
+import STS, { AssumeRoleRequest } from "aws-sdk/clients/sts";
+import { PromiseResult } from "aws-sdk/lib/request";
+import { sts } from "./sts";
 
 export enum RoleName {
     ReadUserData = "ReadUserData"
 }
 
-export function assumeRoleInCallerAccount(roleName: RoleName) : Promise<void>{        
-    
-
+export function assumeRoleInCallerAccount(roleName: RoleName) :  Promise<PromiseResult<STS.AssumeRoleResponse, AWSError>>{            
     return getCallerAccountNum()
         .then(accountNum => assumeRole(roleName, accountNum));
 }
@@ -25,7 +25,7 @@ function getCallerAccountNum() : Promise<string>{
 function assumeRole(roleName: RoleName, accountNum: string){
     const roleArn = `arn:aws:iam::${accountNum}:role/Lambda/${roleName}`
 
-    const params = {
+    const params: AssumeRoleRequest = {
         RoleArn: roleArn,
         RoleSessionName: `assumedRole_${roleName}`,
         //Non-MVP: Think about tweaking duration or allowing it to be changed.
@@ -34,5 +34,5 @@ function assumeRole(roleName: RoleName, accountNum: string){
         DurationSeconds: 5,
     };
 
-    stsClient.send(new AssumeRoleCommand(params))
+    return sts.assumeRole(params).promise()
 }
