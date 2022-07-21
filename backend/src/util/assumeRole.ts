@@ -28,10 +28,8 @@ function assumeRole(roleName: RoleName, accountNum: string){
     const params: AssumeRoleRequest = {
         RoleArn: roleArn,
         RoleSessionName: `assumedRole_${roleName}`,
-        //Non-MVP: Think about tweaking duration or allowing it to be changed.
-        //For now, fixed duration of a few seconds for each lambda seesm reasonable
-        //We don't expect lambdas to take very long at all
-        DurationSeconds: 5,
+        // 900s = 15 mins is minimum assume role duration, and also lambda maximum timeout, so makes sense to use this
+        DurationSeconds: 900,
     };
 
     return sts.assumeRole(params).promise()
