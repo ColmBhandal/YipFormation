@@ -27,10 +27,9 @@ module.exports = {
 
     target: "node",
 
-    // The aws-sdk seems to be part of the lambda runtime already, so there is no need to bundle it into each lambda
-    // This makes a massive difference to the bundles lambda's size
-    // Note: the aws sdk seems to be available to both sam local invoke and the lambda runtime in the AWS cloud
-    // The README for aws-sam-webpack-plugin stated that the AWS SDK would not be available to sam local invoke, perhaps it was outdated
+    // AWS recommends always including the aws-sdk package in your Lambda package, even though the SDK is always available in the lambda runtime.
+    // They recommend this so that your code's runtime behaviour is always predicatable and controllable by you
+    // However, adding this package to the externals list causes it to be excluded from webpack and significantly reduces the bundle size
     externals: ["aws-sdk"],
 
     mode: process.env.NODE_ENV || "production",
@@ -40,4 +39,8 @@ module.exports = {
     },
 
     plugins: [awsSamPlugin],
+    
+    optimization: {
+        minimize: false
+     },
 };

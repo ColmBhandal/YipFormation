@@ -34,6 +34,11 @@ Globals:
       AllowHeaders: "'*'"
       AllowOrigin: "'*'"
       AllowMethods: "'POST, GET, OPTIONS'"
+  Function:
+    Handler: index.handler
+    Runtime: nodejs16.x
+    Timeout: 10
+    Tracing: Active
 
 Resources:
   ApiWebCertificate:
@@ -68,27 +73,6 @@ Resources:
         Route53:
           HostedZoneId: !ImportValue
             "Fn::Sub": "${HostedZoneStackName}-HostedZoneID"
-
-  YipcodesGetFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: index.handler
-      Runtime: nodejs16.x
-      CodeUri: ./src/functions/yipcodesGet
-      Description: Get all YipCodes for the given user
-      Timeout: 10
-      Policies:
-        - AWSLambdaBasicExecutionRole
-        - AWSLambda_ReadOnlyAccess
-        - AWSXrayWriteOnlyAccess
-      Tracing: Active
-      Events:
-        Get:
-          Type: Api
-          Properties:
-            RestApiId: !Ref Api
-            Path: /yipcodes
-            Method: GET
 
   CognitoUserPool:
     Type: AWS::Cognito::UserPool
@@ -138,3 +122,60 @@ Resources:
         AccessToken: "seconds"
         IdToken: "seconds"
         RefreshToken: "seconds"
+        
+  # Lambda Functions and Bootstrap Execution Roles
+
+  YipcodesGetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src/functions/yipcodesGet
+      Description: Get all YipCodes for the given user
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api        
+            Path: /yipcodes
+            Method: GET
+      Role: !GetAtt YipCodesGetFunctionRole.Arn
+  YipCodesGetFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole        
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+
+  # Lambda Assumable Roles
+
+  LambdaReadUserDataRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ReadUserData
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !GetAtt YipCodesGetFunctionRole.Arn
+            Action:
+              - 'sts:AssumeRole'
+              - 'sts:TagSession'
+            Condition:
+              'Null':
+                aws:RequestTag/CognitoUserSub: false
+              ForAllValues:StringEquals:
+                aws:TagKeys: CognitoUserSub           
+
+      Path: /Lambda/
+      #TODO: Change this to inline policy
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole

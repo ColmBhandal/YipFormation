@@ -1,9 +1,36 @@
-import {STS} from "aws-sdk"
+import { AWSError } from "aws-sdk";
+import STS, { AssumeRoleRequest } from "aws-sdk/clients/sts";
+import { PromiseResult } from "aws-sdk/lib/request";
+import { sts } from "./sts";
 
-export function assumeRole(){
-    //This is a stub for now
-    //TODO: Implement this properly
-    var sts = new STS()
-    
-    console.log("STS Endpoint: " + sts.endpoint.hostname)
+export enum RoleName {
+    ReadUserData = "ReadUserData"
+}
+
+export function assumeRoleInCallerAccount(roleName: RoleName) :  Promise<PromiseResult<STS.AssumeRoleResponse, AWSError>>{            
+    return getCallerAccountNum()
+        .then(accountNum => assumeRole(roleName, accountNum));
+}
+
+//It's a bit wasteful repeatedly asking for the account number as it won't change across calls
+//Non-MVP: Consider statically injecting the account number during Lambda upload.
+function getCallerAccountNum() : Promise<string>{
+    return sts.getCallerIdentity({}).promise()
+        .then(
+            ({ Account: accountNum}) => accountNum ?? 
+            Promise.reject("Error retrieving account number")
+        )
+}
+
+function assumeRole(roleName: RoleName, accountNum: string){
+    const roleArn = `arn:aws:iam::${accountNum}:role/Lambda/${roleName}`
+
+    const params: AssumeRoleRequest = {
+        RoleArn: roleArn,
+        RoleSessionName: `assumedRole_${roleName}`,
+        // 900s = 15 mins is minimum assume role duration, and also lambda maximum timeout, so makes sense to use this
+        DurationSeconds: 900,
+    };
+
+    return sts.assumeRole(params).promise()
 }

@@ -5,7 +5,7 @@ confirm_changeset=true
 tags = "Name=\"yipcode-stack\""
 stack_name = "dev-yipcode-backend"
 resolve_s3=true
-capabilities="CAPABILITY_IAM"
+capabilities="CAPABILITY_NAMED_IAM"
 parameter_overrides = "RootDomainName=dev.yipcode.com HostedZoneStackName=dev-yipcode-zone CognitoDomainPrefix=dev-yipcode-auth FrontOrigin=dev.yipcode.com"
 
 [prod.deploy.parameters]

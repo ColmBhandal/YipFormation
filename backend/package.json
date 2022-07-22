@@ -10,7 +10,7 @@
         "webpack-cli": "^4.10.0"
     },
     "dependencies": {
-        "aws-sdk": "2.1176.0"
+        "aws-sdk": "^2.1179.0"
     },
     "scripts": {
       "clean": "rimraf .aws-sam .vscode",
