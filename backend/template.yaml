@@ -123,6 +123,17 @@ Resources:
         IdToken: "seconds"
         RefreshToken: "seconds"
         
+  UserDataTable:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      TableName: UserData
+      AttributeDefinitions: 
+        - AttributeName: sub
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: sub
+          KeyType: HASH      
+
   # Lambda Functions and Bootstrap Execution Roles
 
   YipcodesGetFunction:
@@ -153,7 +164,7 @@ Resources:
               - 'sts:AssumeRole'
             Effect: Allow
 
-  # Lambda Assumable Roles
+  # Tag-Parametrised Lambda Assumable Roles & associated policies
 
   LambdaReadUserDataRole:
     Type: AWS::IAM::Role
@@ -174,8 +185,24 @@ Resources:
                 aws:RequestTag/CognitoUserSub: false
               ForAllValues:StringEquals:
                 aws:TagKeys: CognitoUserSub           
-
       Path: /Lambda/
       #TODO: Change this to inline policy
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+  LambdaReadUserDataPolicy:
+    Type: AWS::IAM::Policy
+    Properties: 
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+            Resource: !GetAtt UserDataTable.Arn
+            Condition:
+              ForAllValues:StringEquals:
+                 dynamodb:LeadingKeys:
+                  - ${aws:RequestTag/CognitoUserSub}
+      PolicyName: LambdaReadUserData
+      Roles: 
+        - LambdaReadUserDataRole
