@@ -7,9 +7,9 @@ export enum RoleName {
     ReadUserData = "ReadUserData"
 }
 
-export function assumeRoleInCallerAccount(roleName: RoleName) :  Promise<PromiseResult<STS.AssumeRoleResponse, AWSError>>{            
+export function assumeRoleInCallerAccount(roleName: RoleName, cognitoSub: string) :  Promise<PromiseResult<STS.AssumeRoleResponse, AWSError>>{            
     return getCallerAccountNum()
-        .then(accountNum => assumeRole(roleName, accountNum));
+        .then(accountNum => assumeRole(roleName, accountNum, cognitoSub));
 }
 
 //It's a bit wasteful repeatedly asking for the account number as it won't change across calls
@@ -22,7 +22,7 @@ function getCallerAccountNum() : Promise<string>{
         )
 }
 
-function assumeRole(roleName: RoleName, accountNum: string){
+function assumeRole(roleName: RoleName, accountNum: string, cognitoSub: string){
     const roleArn = `arn:aws:iam::${accountNum}:role/Lambda/${roleName}`
 
     const params: AssumeRoleRequest = {
@@ -30,6 +30,7 @@ function assumeRole(roleName: RoleName, accountNum: string){
         RoleSessionName: `assumedRole_${roleName}`,
         // 900s = 15 mins is minimum assume role duration, and also lambda maximum timeout, so makes sense to use this
         DurationSeconds: 900,
+        Tags: [{Key:"CognitoUserSub", Value: cognitoSub}]
     };
 
     return sts.assumeRole(params).promise()
