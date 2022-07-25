@@ -1,8 +1,9 @@
 import { APIGatewayProxyWithCognitoAuthorizerHandler } from "aws-lambda"
 import { assumeRoleInCallerAccount, RoleName } from "../../util/assumeRole"
+import { extractSub } from "../../util/cognito"
 
 export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event, context) => {   
-  const cognitoSub = event.requestContext.authorizer.claims['sub']
+  const cognitoSub = extractSub(event)
   if(!!cognitoSub){
     const tempCredentials = await assumeRoleInCallerAccount(RoleName.ReadUserData, cognitoSub)
     console.log("Credentials expiration: " + tempCredentials.Credentials?.Expiration)
