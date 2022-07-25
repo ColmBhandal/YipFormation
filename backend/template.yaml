@@ -202,7 +202,7 @@ Resources:
             Condition:
               ForAllValues:StringEquals:
                  dynamodb:LeadingKeys:
-                  - ${aws:RequestTag/CognitoUserSub}
+                  - ${aws:PrincipalTag/CognitoUserSub}
       PolicyName: LambdaReadUserData
       Roles: 
         - !Ref LambdaReadUserDataRole
