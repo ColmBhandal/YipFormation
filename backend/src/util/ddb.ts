@@ -4,15 +4,18 @@ export enum TableName {
     UserData = "UserData"
 }
 
-const ddbClient = new AWS.DynamoDB.DocumentClient();
-
-export function getUserData(cognitoSub: string){
-    return getItem({
-        TableName: TableName.UserData,
-        Key: {
-            sub: cognitoSub
+export function getUserData(cognitoSub: string, credentials: AWS.Credentials){
+    
+    const ddbClient = new AWS.DynamoDB.DocumentClient({credentials});
+    return getItem(
+        ddbClient,
+        {
+            TableName: TableName.UserData,
+            Key: {
+                sub: cognitoSub
+            }
         }
-    })
+    )
 }
 
 type GetItemRestrictedInput = {
@@ -22,7 +25,7 @@ type GetItemRestrictedInput = {
     }
 }
 
-const getItem =  (
+const getItem =  (ddbClient: AWS.DynamoDB.DocumentClient,
     input: GetItemRestrictedInput
   ): Promise<AWS.DynamoDB.DocumentClient.GetItemOutput> => {
 

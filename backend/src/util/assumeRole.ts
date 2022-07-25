@@ -1,15 +1,24 @@
-import { AWSError } from "aws-sdk";
-import STS, { AssumeRoleRequest } from "aws-sdk/clients/sts";
-import { PromiseResult } from "aws-sdk/lib/request";
+import AWS from "aws-sdk";
+import { AssumeRoleRequest } from "aws-sdk/clients/sts";
 import { sts } from "./sts";
 
 export enum RoleName {
     ReadUserData = "ReadUserData"
 }
 
-export function assumeRoleInCallerAccount(roleName: RoleName, cognitoSub: string) :  Promise<PromiseResult<STS.AssumeRoleResponse, AWSError>>{            
+export function assumeRoleInCallerAccount(roleName: RoleName, cognitoSub: string){            
     return getCallerAccountNum()
-        .then(accountNum => assumeRole(roleName, accountNum, cognitoSub));
+        .then(accountNum => assumeRole(roleName, accountNum, cognitoSub))
+        .then(response => response.Credentials ?? Promise.reject("Error getting STS credentials"))
+        .then(stsCredentials => stsToAwsCredentials(stsCredentials))
+}
+
+function stsToAwsCredentials(stsCredentials: AWS.STS.Credentials) : AWS.Credentials{
+    return new AWS.Credentials({
+        accessKeyId: stsCredentials.AccessKeyId,
+        secretAccessKey: stsCredentials.SecretAccessKey,
+        sessionToken: stsCredentials.SessionToken,
+      });
 }
 
 //It's a bit wasteful repeatedly asking for the account number as it won't change across calls

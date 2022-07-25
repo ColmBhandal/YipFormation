@@ -7,17 +7,17 @@ export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event
   console.log('## FUNCTION NAME: ' + serialize(context.functionName))
   console.log('## EVENT PATH: ' + serialize(event.path))  
   const cognitoSub = extractSub(event)
+  //TODO: Replace below code with promise then-chaining
   if(!!cognitoSub){
-    const tempCredentials = await assumeRoleInCallerAccount(RoleName.ReadUserData, cognitoSub)
-    console.log("Credentials expiration: " + tempCredentials.Credentials?.Expiration)
+    const credentials = await assumeRoleInCallerAccount(RoleName.ReadUserData, cognitoSub)
     //TODO: Will somehow need to pass credentials or else this will fail
-    const userDataAttMap = (await getUserData(cognitoSub)).Item
+    const userDataAttMap = (await getUserData(cognitoSub, credentials)).Item
     if(!!userDataAttMap){
       //TODO: Use type guard to convert attribute map into object with known properties
       console.log(formatResponse(serialize(userDataAttMap)))
       throw new Error("Unmarshalling DDB Read not yet implemented")
       //return formatResponse(serialize({yipCodes: yipCodes}))
-    }    
+    }
   }
   return internalServerErrorResponse
 }
