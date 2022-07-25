@@ -187,7 +187,6 @@ Resources:
               ForAllValues:StringEquals:
                 aws:TagKeys: CognitoUserSub           
       Path: /Lambda/
-      #TODO: Change this to inline policy
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
   LambdaReadUserDataPolicy:
