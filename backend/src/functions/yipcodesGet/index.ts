@@ -14,7 +14,7 @@ export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event
     const userDataAttMap = (await getUserData(cognitoSub)).Item
     if(!!userDataAttMap){
       //TODO: Use type guard to convert attribute map into object with known properties
-      console.log(userDataAttMap)
+      console.log(formatResponse(serialize(userDataAttMap)))
       throw new Error("Unmarshalling DDB Read not yet implemented")
       //return formatResponse(serialize({yipCodes: yipCodes}))
     }    
