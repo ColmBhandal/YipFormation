@@ -132,7 +132,8 @@ Resources:
           AttributeType: S
       KeySchema: 
         - AttributeName: sub
-          KeyType: HASH      
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
 
   # Lambda Functions and Bootstrap Execution Roles
 
@@ -205,4 +206,4 @@ Resources:
                   - ${aws:RequestTag/CognitoUserSub}
       PolicyName: LambdaReadUserData
       Roles: 
-        - LambdaReadUserDataRole
+        - !Ref LambdaReadUserDataRole
