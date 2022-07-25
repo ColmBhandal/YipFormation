@@ -1,29 +1,24 @@
 import { APIGatewayProxyWithCognitoAuthorizerHandler } from "aws-lambda"
 import { extractSub } from "../../util/cognito"
 import { getUserData } from "../../util/ddb"
-import { logAndReturnRejectedPromise } from "../../util/misc"
+import { isUserData } from "../../util/userData"
 
 export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event, context) => {     
   console.log('## FUNCTION NAME: ' + serialize(context.functionName))
   console.log('## EVENT PATH: ' + serialize(event.path))  
   const cognitoSub = extractSub(event)  
   if(!!cognitoSub){
-    await getTransformedUserData(cognitoSub)
+    const rawResponse = await getUserData(cognitoSub)
+    return getFormattedYipcodeResponse(rawResponse)
   }
   return internalServerErrorResponse
 }
 
-function getTransformedUserData(cognitoSub: string){
-  return getUserData(cognitoSub)
-  .then(data => data.Item ?? logAndReturnRejectedPromise("No user data item found"))
-  .then(userDataAttMap => getYipcodesFromAttMap(userDataAttMap))
-}
-
-function getYipcodesFromAttMap(userDataAttMap: AWS.DynamoDB.DocumentClient.AttributeMap){
-      //TODO: Use type guard to convert attribute map into object with known properties
-      console.log(formatResponse(serialize(userDataAttMap)))
-      throw new Error("Unmarshalling DDB Read not yet implemented")
-      //return formatResponse(serialize({yipCodes: yipCodes}))
+function getFormattedYipcodeResponse(rawResponse: any){
+  if(isUserData(rawResponse)){
+    return formatResponse(serialize(rawResponse.data.yipCodes))
+  }
+  return internalServerErrorResponse
 }
 
 const formatResponse = function(body: string){
