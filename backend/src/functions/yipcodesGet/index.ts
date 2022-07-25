@@ -1,25 +1,29 @@
 import { APIGatewayProxyWithCognitoAuthorizerHandler } from "aws-lambda"
-import { assumeRoleInCallerAccount, RoleName } from "../../util/assumeRole"
 import { extractSub } from "../../util/cognito"
 import { getUserData } from "../../util/ddb"
+import { logAndReturnRejectedPromise } from "../../util/misc"
 
 export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event, context) => {     
   console.log('## FUNCTION NAME: ' + serialize(context.functionName))
   console.log('## EVENT PATH: ' + serialize(event.path))  
-  const cognitoSub = extractSub(event)
-  //TODO: Replace below code with promise then-chaining
+  const cognitoSub = extractSub(event)  
   if(!!cognitoSub){
-    const credentials = await assumeRoleInCallerAccount(RoleName.ReadUserData, cognitoSub)
-    //TODO: Will somehow need to pass credentials or else this will fail
-    const userDataAttMap = (await getUserData(cognitoSub, credentials)).Item
-    if(!!userDataAttMap){
+    await getTransformedUserData(cognitoSub)
+  }
+  return internalServerErrorResponse
+}
+
+function getTransformedUserData(cognitoSub: string){
+  return getUserData(cognitoSub)
+  .then(data => data.Item ?? logAndReturnRejectedPromise("No user data item found"))
+  .then(userDataAttMap => getYipcodesFromAttMap(userDataAttMap))
+}
+
+function getYipcodesFromAttMap(userDataAttMap: AWS.DynamoDB.DocumentClient.AttributeMap){
       //TODO: Use type guard to convert attribute map into object with known properties
       console.log(formatResponse(serialize(userDataAttMap)))
       throw new Error("Unmarshalling DDB Read not yet implemented")
       //return formatResponse(serialize({yipCodes: yipCodes}))
-    }
-  }
-  return internalServerErrorResponse
 }
 
 const formatResponse = function(body: string){

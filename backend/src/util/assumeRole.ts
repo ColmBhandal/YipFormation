@@ -6,9 +6,9 @@ export enum RoleName {
     ReadUserData = "ReadUserData"
 }
 
-export function assumeRoleInCallerAccount(roleName: RoleName, cognitoSub: string){            
+export function assumeTaggedRoleInCallerAccount(roleName: RoleName, cognitoSub: string){            
     return getCallerAccountNum()
-        .then(accountNum => assumeRole(roleName, accountNum, cognitoSub))
+        .then(accountNum => assumeTaggedRole(roleName, accountNum, cognitoSub))
         .then(response => response.Credentials ?? Promise.reject("Error getting STS credentials"))
         .then(stsCredentials => stsToAwsCredentials(stsCredentials))
 }
@@ -31,7 +31,7 @@ function getCallerAccountNum() : Promise<string>{
         )
 }
 
-function assumeRole(roleName: RoleName, accountNum: string, cognitoSub: string){
+function assumeTaggedRole(roleName: RoleName, accountNum: string, cognitoSub: string){
     const roleArn = `arn:aws:iam::${accountNum}:role/Lambda/${roleName}`
 
     const params: AssumeRoleRequest = {
