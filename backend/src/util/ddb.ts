@@ -1,6 +1,6 @@
 import AWS from "aws-sdk";
 import { assumeTaggedRoleInCallerAccount, RoleName } from "./assumeRole"
-import { logAndReturnRejectedPromise } from "./misc";
+import { logAndReturnRejectedPromise, serialize } from "./misc";
 
 export enum TableName {
     UserData = "UserData"
@@ -16,11 +16,13 @@ export function getUserData(cognitoSub: string){
 
     return assumeTaggedRoleAndNewClient(cognitoSub)
         .then(ddbClient => getItem(ddbClient, getInput))
+        .catch(err => logAndReturnRejectedPromise("Error getting user data: " + serialize(err)))
 }
 
 function assumeTaggedRoleAndNewClient(cognitoSub: string){
     return assumeTaggedRoleInCallerAccount(RoleName.ReadUserData, cognitoSub)
     .then(credentials => new AWS.DynamoDB.DocumentClient({credentials}))
+    .catch(err => logAndReturnRejectedPromise("Error assuming role for DynamoDB client: " + serialize(err)))
 }
 
 type GetItemRestrictedInput = {
@@ -46,4 +48,5 @@ const getItem =  (ddbClient: AWS.DynamoDB.DocumentClient,
     })
     .then(output => output.Item ?? logAndReturnRejectedPromise("No item found during DynamoDB get"))
     .then(item => AWS.DynamoDB.Converter.unmarshall(item))
+    .catch(err => logAndReturnRejectedPromise("Error getting item from DynamoDB table: " + serialize(err)))
   }

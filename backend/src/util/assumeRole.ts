@@ -1,5 +1,6 @@
 import AWS from "aws-sdk";
 import { AssumeRoleRequest } from "aws-sdk/clients/sts";
+import { logAndReturnRejectedPromise, serialize } from "./misc";
 import { sts } from "./sts";
 
 export enum RoleName {
@@ -11,6 +12,7 @@ export function assumeTaggedRoleInCallerAccount(roleName: RoleName, cognitoSub: 
         .then(accountNum => assumeTaggedRole(roleName, accountNum, cognitoSub))
         .then(response => response.Credentials ?? Promise.reject("Error getting STS credentials"))
         .then(stsCredentials => stsToAwsCredentials(stsCredentials))
+        .catch(err => logAndReturnRejectedPromise("Error assuming role in caller account: " + serialize(err)))
 }
 
 function stsToAwsCredentials(stsCredentials: AWS.STS.Credentials) : AWS.Credentials{
@@ -29,6 +31,7 @@ function getCallerAccountNum() : Promise<string>{
             ({ Account: accountNum}) => accountNum ?? 
             Promise.reject("Error retrieving account number")
         )
+        .catch(err => logAndReturnRejectedPromise("Error getting caller's account number: " + serialize(err)))
 }
 
 function assumeTaggedRole(roleName: RoleName, accountNum: string, cognitoSub: string){

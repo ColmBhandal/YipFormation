@@ -1,6 +1,8 @@
 import { APIGatewayProxyWithCognitoAuthorizerHandler } from "aws-lambda"
 import { extractSub } from "../../util/cognito"
 import { getUserData } from "../../util/ddb"
+import { formatResponse, internalServerErrorResponse } from "../../util/formatting"
+import { serialize } from "../../util/misc"
 import { isUserData } from "../../util/userData"
 
 export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event, context) => {     
@@ -19,33 +21,4 @@ function getFormattedYipcodeResponse(rawResponse: any){
     return formatResponse(serialize(rawResponse.data.yipCodes))
   }
   return internalServerErrorResponse
-}
-
-const formatResponse = function(body: string){
-  const response = {
-    "statusCode": 200,
-    "headers": {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Headers" : "*",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET"
-    },
-    "isBase64Encoded": false,
-    "body": body
-  }
-  return response
-}
-
-const internalServerErrorResponse = 
-{
-    "statusCode": 500,
-    "headers": {
-      "Content-Type": "text/plain"
-    },
-    "isBase64Encoded": false,
-    "body": "Internal Server Error"
-}
-
-const serialize = function(obj: any) {
-  return JSON.stringify(obj)
 }
