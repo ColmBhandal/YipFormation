@@ -47,6 +47,5 @@ const getItem =  (ddbClient: AWS.DynamoDB.DocumentClient,
       })
     })
     .then(output => output.Item ?? logAndReturnRejectedPromise("No item found during DynamoDB get"))
-    .then(item => AWS.DynamoDB.Converter.unmarshall(item))
     .catch(err => logAndReturnRejectedPromise("Error getting item from DynamoDB table: " + serialize(err)))
   }
