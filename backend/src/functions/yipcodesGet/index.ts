@@ -13,12 +13,17 @@ export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event
     const rawResponse = await getUserData(cognitoSub)
     return getFormattedYipcodeResponse(rawResponse)
   }
+  console.error("No Cognito SUB")
   return internalServerErrorResponse
 }
 
 function getFormattedYipcodeResponse(rawResponse: any){
   if(isUserData(rawResponse)){
-    return formatResponse(serialize(rawResponse.data.yipCodes))
+    const yipCodes = rawResponse.data.yipCodes
+    const serialized = serialize(yipCodes)
+    console.log("Returning YipCodes: " + yipCodes)
+    return formatResponse(serialized)
   }
+  console.error("Invalid DB response format - expected UserData")
   return internalServerErrorResponse
 }
