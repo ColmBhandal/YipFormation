@@ -21,7 +21,7 @@ function getFormattedYipcodeResponse(rawResponse: any){
   if(isUserData(rawResponse)){
     const responsePayload = {yipCodes: rawResponse.data.yipCodes}
     const serializedPayload = serialize(responsePayload)
-    console.log("Returning YipCodes: " + responsePayload)
+    console.log("Returning YipCodes: " + serializedPayload)
     return formatResponse(serializedPayload)
   }
   console.error("Invalid DB response format - expected UserData")
