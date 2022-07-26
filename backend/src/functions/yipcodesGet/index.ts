@@ -1,9 +1,8 @@
 import { APIGatewayProxyWithCognitoAuthorizerHandler } from "aws-lambda"
 import { extractSub } from "../../util/cognito"
-import { getUserData } from "../../util/ddb"
 import { formatResponse, internalServerErrorResponse } from "../../util/formatting"
 import { serialize } from "../../util/misc"
-import { isUserData } from "../../util/userData"
+import { getUserData } from "../../util/userData"
 
 export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event, context) => {     
   console.log('## FUNCTION NAME: ' + serialize(context.functionName))
@@ -11,19 +10,12 @@ export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event
   const cognitoSub = extractSub(event)
   if(!!cognitoSub){
     const rawResponse = await getUserData(cognitoSub)
-    return getFormattedYipcodeResponse(rawResponse)
+    if(!!rawResponse){
+      return formatResponse(serialize({yipCodes: rawResponse.data.yipCodes}))
+    }
+    console.error("Error retrieving user data")
+    return internalServerErrorResponse
   }
   console.error("No Cognito SUB")
-  return internalServerErrorResponse
-}
-
-function getFormattedYipcodeResponse(rawResponse: any){
-  if(isUserData(rawResponse)){
-    const responsePayload = {yipCodes: rawResponse.data.yipCodes}
-    const serializedPayload = serialize(responsePayload)
-    console.log("Returning YipCodes: " + serializedPayload)
-    return formatResponse(serializedPayload)
-  }
-  console.error("Invalid DB response format - expected UserData")
   return internalServerErrorResponse
 }
