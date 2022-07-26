@@ -20,7 +20,7 @@ export function getUserData(cognitoSub: string){
 
 function assumeTaggedRoleAndNewClient(cognitoSub: string){
     return assumeTaggedRoleInCallerAccount(RoleName.ReadUserData, cognitoSub)
-    .then(credentials => new AWS.DynamoDB.DocumentClient(credentials))
+    .then(credentials => new AWS.DynamoDB.DocumentClient({credentials}))
 }
 
 type GetItemRestrictedInput = {

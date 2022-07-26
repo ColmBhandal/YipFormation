@@ -6,7 +6,7 @@ import { isUserData } from "../../util/userData"
 export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event, context) => {     
   console.log('## FUNCTION NAME: ' + serialize(context.functionName))
   console.log('## EVENT PATH: ' + serialize(event.path))  
-  const cognitoSub = extractSub(event)  
+  const cognitoSub = extractSub(event)
   if(!!cognitoSub){
     const rawResponse = await getUserData(cognitoSub)
     return getFormattedYipcodeResponse(rawResponse)
