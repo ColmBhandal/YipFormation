@@ -11,7 +11,7 @@ export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = async (event
   if(!!cognitoSub){
     const rawResponse = await getUserData(cognitoSub)
     if(!!rawResponse){
-      return formatResponse(serialize({yipCodes: rawResponse.data.yipCodes}))
+      return formatResponse(serialize(rawResponse))
     }
     console.error("Error retrieving user data")
     return internalServerErrorResponse
