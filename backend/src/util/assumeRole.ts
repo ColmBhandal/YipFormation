@@ -1,6 +1,7 @@
 import AWS from "aws-sdk";
 import { AssumeRoleRequest } from "aws-sdk/clients/sts";
-import { logAndReturnRejectedPromise, serialize } from "./misc";
+import { logAndReturnRejectedPromise } from "../packages/YipStackLib/util/misc";
+import { serialize } from "./misc";
 import { sts } from "./sts";
 
 export enum RoleName {

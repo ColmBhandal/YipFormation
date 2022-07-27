@@ -1,0 +1,3 @@
+[submodule "backend/src/packages/YipStackLib"]
+	path = backend/src/packages/YipStackLib
+	url = git@github.com:ColmBhandal/YipStackLib.git
