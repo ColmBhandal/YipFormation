@@ -3,8 +3,10 @@ import { logAndReturnRejectedPromise } from "../packages/YipStackLib/util/misc";
 import { assumeTaggedRoleInCallerAccount, RoleName } from "./assumeRole"
 import { serialize } from "./misc";
 
+
 export enum TableName {
-    UserData = "UserData"
+    UserData = "UserData",
+    UserAddressData = "UserAddressData"
 }
 
 export function assumeTaggedRoleAndNewClient(cognitoSub: string){
@@ -20,10 +22,7 @@ type GetItemRestrictedInput = {
     }
 }
 
-export const getItem =  (ddbClient: AWS.DynamoDB.DocumentClient,
-    input: GetItemRestrictedInput
-  ) => {
-
+export function getItem(ddbClient: AWS.DynamoDB.DocumentClient, input: GetItemRestrictedInput){
     return new Promise<AWS.DynamoDB.DocumentClient.GetItemOutput>((resolve, reject) => {
       ddbClient.get(input, (err, result) => {
         if (err) {
@@ -36,4 +35,40 @@ export const getItem =  (ddbClient: AWS.DynamoDB.DocumentClient,
     })
     .then(output => output.Item ?? logAndReturnRejectedPromise("No item found during DynamoDB get"))
     .catch(err => logAndReturnRejectedPromise("Error getting item from DynamoDB table: " + serialize(err)))
-  }
+}
+
+type GetAllPartitionItemsInput = {
+  TableName: TableName,
+  primaryKey: string
+}
+
+
+/**
+ * WARNING: Do not use this function if the data in a partition might exceed 1MB. 
+ * This function uses a single DynamoDB query under the hood, and the limit on the return size is 1MB.
+ * @param ddbClient DynamoDB client
+ * @param input DynamoDB table & partition key
+ * @returns All items in the partition of the given table corresponding to the given parition key
+ */
+export function getAllItemsInParition(ddbClient: AWS.DynamoDB.DocumentClient, input: GetAllPartitionItemsInput){
+  
+  const queryParams : AWS.DynamoDB.DocumentClient.QueryInput = {
+    TableName: input.TableName,
+    KeyConditionExpression: `#pk = :pk`,
+    ExpressionAttributeNames: { '#pk': 'pk' },
+    ExpressionAttributeValues: { ':pk': input.primaryKey}
+  };
+  
+  return new Promise<AWS.DynamoDB.DocumentClient.QueryOutput>((resolve, reject) => {
+    ddbClient.query(queryParams, (err, data) => {
+      if (err) {
+        console.error(err)
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
+  .then(output => output.Items ?? logAndReturnRejectedPromise("No item found during DynamoDB get"))
+  .catch(err => logAndReturnRejectedPromise("Error getting item from DynamoDB table: " + serialize(err)))
+}

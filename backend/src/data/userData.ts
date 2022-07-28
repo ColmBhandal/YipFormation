@@ -1,8 +1,8 @@
 import { DocumentClient } from "aws-sdk/clients/dynamodb"
 import { isUserData, UserData } from "../packages/YipStackLib/types/userData"
 import { logAndReturnRejectedPromise } from "../packages/YipStackLib/util/misc"
-import { assumeTaggedRoleAndNewClient, getItem, TableName } from "./ddb"
-import { serialize } from "./misc"
+import { assumeTaggedRoleAndNewClient, getItem, TableName } from "../util/ddb"
+import { serialize } from "../util/misc"
 
 export function getUserData(cognitoSub: string) : Promise<UserData>{    
     const getInput = {

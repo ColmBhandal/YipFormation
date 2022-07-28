@@ -134,6 +134,22 @@ Resources:
         - AttributeName: sub
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
+        
+  UserAddressDataTable:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      TableName: UserAddressData
+      AttributeDefinitions: 
+        - AttributeName: sub
+          AttributeType: S
+        - AttributeName: yipCode
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: sub
+          KeyType: HASH
+        - AttributeName: yipCode
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
 
   # Lambda Functions and Bootstrap Execution Roles
 
@@ -141,7 +157,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./src/functions/userDataGet
-      Description: Get all user data for the given user
+      Description: Get all user data for the authenticated user
       Events:
         Get:
           Type: Api
@@ -151,6 +167,34 @@ Resources:
             Method: GET
       Role: !GetAtt UserDataGetFunctionRole.Arn
   UserDataGetFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole        
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+
+  userAddressDataGetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src/functions/userAddressDataGet
+      Description: Get all address data for the authenticated user
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api        
+            Path: /addresses
+            Method: GET
+      Role: !GetAtt UserAddressDataGetFunctionRole.Arn
+  UserAddressDataGetFunctionRole:
     Type: AWS::IAM::Role
     Properties:
       ManagedPolicyArns:

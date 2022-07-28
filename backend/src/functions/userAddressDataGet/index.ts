@@ -1,16 +1,16 @@
 import { APIGatewayProxyWithCognitoAuthorizerHandler } from "aws-lambda"
+import { getUserAddressData } from "../../data/userAddressData"
 import { okResponse, internalServerErrorResponse } from "../../util/http"
 import { runWithCognitoSub } from "../../util/lambda"
 import { serialize } from "../../util/misc"
-import { getUserData } from "../../data/userData"
 
-export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = runWithCognitoSub(getUserDataFromSub)
+export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = runWithCognitoSub(getUserAddressDataFromSub)
 
-async function getUserDataFromSub(cognitoSub: string){
-  const rawResponse = await getUserData(cognitoSub)
+async function getUserAddressDataFromSub(cognitoSub: string){
+  const rawResponse = await getUserAddressData(cognitoSub)
   if(!!rawResponse){
     return okResponse(serialize(rawResponse))
   }
-  console.error("Error retrieving user data")
+  console.error("Error retrieving user's address data")
   return internalServerErrorResponse
 }
