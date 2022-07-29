@@ -1,7 +1,7 @@
 import AWS from "aws-sdk";
 import { logAndReturnRejectedPromise } from "../packages/YipStackLib/util/misc";
 import { assumeTaggedRoleInCallerAccount, RoleName } from "./assumeRole"
-import { serialize } from "./misc";
+import { serialize } from "../packages/YipStackLib/util/misc";
 
 
 export enum TableName {

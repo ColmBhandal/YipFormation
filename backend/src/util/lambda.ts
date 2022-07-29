@@ -1,7 +1,7 @@
 import { APIGatewayProxyResult, APIGatewayProxyWithCognitoAuthorizerEvent, APIGatewayProxyWithCognitoAuthorizerHandler, Context } from "aws-lambda";
 import { extractSub } from "./cognito";
 import { internalServerErrorResponse } from "./http";
-import { serialize } from "./misc";
+import { serialize } from "../packages/YipStackLib/util/misc";
 
 export function runWithCognitoSub(subProcessor: (cognitoSub: string) => Promise<APIGatewayProxyResult>)
     : APIGatewayProxyWithCognitoAuthorizerHandler

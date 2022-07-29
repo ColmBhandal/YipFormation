@@ -1,7 +1,7 @@
 import { APIGatewayProxyWithCognitoAuthorizerHandler } from "aws-lambda"
 import { okResponse, internalServerErrorResponse } from "../../util/http"
 import { runWithCognitoSub } from "../../util/lambda"
-import { serialize } from "../../util/misc"
+import { serialize } from "../../packages/YipStackLib/util/misc"
 import { getUserData } from "../../data/userData"
 
 export const handler: APIGatewayProxyWithCognitoAuthorizerHandler = runWithCognitoSub(getUserDataFromSub)

@@ -2,7 +2,7 @@ import { DocumentClient } from "aws-sdk/clients/dynamodb"
 import { isUserAddressData, UserAddressData } from "../packages/YipStackLib/types/userAddressData"
 import { logAndReturnRejectedPromise } from "../packages/YipStackLib/util/misc"
 import { assumeTaggedRoleAndNewClient, getAllItemsInParition, TableName } from "../util/ddb"
-import { serialize } from "../util/misc"
+import { serialize } from "../packages/YipStackLib/util/misc"
 
 
 export function getUserAddressData(cognitoSub: string) : Promise<UserAddressData[]>{    
