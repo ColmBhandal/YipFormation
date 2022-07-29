@@ -250,3 +250,44 @@ Resources:
       PolicyName: LambdaReadUserData
       Roles: 
         - !Ref LambdaReadUserDataRole
+
+
+  LambdaReadUserAddressDataRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ReadUserAddressData
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !GetAtt UserAddressDataGetFunctionRole.Arn
+            Action:
+              - 'sts:AssumeRole'
+              - 'sts:TagSession'
+            Condition:
+              'Null':
+                aws:RequestTag/CognitoUserSub: false
+              ForAllValues:StringEquals:
+                aws:TagKeys: CognitoUserSub           
+      Path: /Lambda/
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+  LambdaReadUserAddressDataPolicy:
+    Type: AWS::IAM::Policy
+    Properties: 
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Query
+            Resource: !GetAtt UserAddressDataTable.Arn
+            Condition:
+              ForAllValues:StringEquals:
+                 dynamodb:LeadingKeys:
+                  - ${aws:PrincipalTag/CognitoUserSub}
+      PolicyName: LambdaReadUserAddressData
+      Roles: 
+        - !Ref LambdaReadUserAddressDataRole
