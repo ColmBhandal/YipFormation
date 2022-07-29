@@ -3,6 +3,7 @@ import { isUserData, UserData } from "../packages/YipStackLib/types/userData"
 import { logAndReturnRejectedPromise } from "../packages/YipStackLib/util/misc"
 import { assumeTaggedRoleAndNewClient, getItem, TableName } from "../util/ddb"
 import { serialize } from "../packages/YipStackLib/util/misc"
+import { RoleName } from "../util/assumeRole"
 
 export function getUserData(cognitoSub: string) : Promise<UserData>{    
     const getInput = {
@@ -12,7 +13,7 @@ export function getUserData(cognitoSub: string) : Promise<UserData>{
         }
     }
 
-    return assumeTaggedRoleAndNewClient(cognitoSub)
+    return assumeTaggedRoleAndNewClient(cognitoSub, RoleName.ReadUserData)
         .then(ddbClient => getItem(ddbClient, getInput))
         .then(attMap => getUserDataFromRawResponse(attMap))
         .catch(err => logAndReturnRejectedPromise("Error getting user data: " + serialize(err)))

@@ -9,8 +9,8 @@ export enum TableName {
     UserAddressData = "UserAddressData"
 }
 
-export function assumeTaggedRoleAndNewClient(cognitoSub: string){
-    return assumeTaggedRoleInCallerAccount(RoleName.ReadUserData, cognitoSub)
+export function assumeTaggedRoleAndNewClient(cognitoSub: string, roleName: RoleName){
+    return assumeTaggedRoleInCallerAccount(roleName, cognitoSub)
     .then(credentials => new AWS.DynamoDB.DocumentClient({credentials}))
     .catch(err => logAndReturnRejectedPromise("Error assuming role for DynamoDB client: " + serialize(err)))
 }

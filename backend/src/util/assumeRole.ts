@@ -5,7 +5,8 @@ import { serialize } from "../packages/YipStackLib/util/misc";
 import { sts } from "./sts";
 
 export enum RoleName {
-    ReadUserData = "ReadUserData"
+    ReadUserData = "ReadUserData",
+    ReadUserAddressData = "ReadUserAddressData"
 }
 
 export function assumeTaggedRoleInCallerAccount(roleName: RoleName, cognitoSub: string){            

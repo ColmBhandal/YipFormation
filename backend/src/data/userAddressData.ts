@@ -3,6 +3,7 @@ import { isUserAddressData, UserAddressData } from "../packages/YipStackLib/type
 import { logAndReturnRejectedPromise } from "../packages/YipStackLib/util/misc"
 import { assumeTaggedRoleAndNewClient, getAllItemsInParition, TableName } from "../util/ddb"
 import { serialize } from "../packages/YipStackLib/util/misc"
+import { RoleName } from "../util/assumeRole"
 
 
 export function getUserAddressData(cognitoSub: string) : Promise<UserAddressData[]>{    
@@ -11,8 +12,8 @@ export function getUserAddressData(cognitoSub: string) : Promise<UserAddressData
         primaryKey: cognitoSub
     }
 
-    return assumeTaggedRoleAndNewClient(cognitoSub)
-        .then(ddbClient => getAllItemsInParition( ddbClient, getAllInput))
+    return assumeTaggedRoleAndNewClient(cognitoSub, RoleName.ReadUserAddressData)
+        .then(ddbClient => getAllItemsInParition(ddbClient, getAllInput))
         .then(itemList => getUserAddressDataFromRawResponse(itemList))
         .catch(err => logAndReturnRejectedPromise("Error getting user data: " + serialize(err)))
 }
