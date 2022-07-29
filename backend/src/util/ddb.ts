@@ -3,10 +3,13 @@ import { logAndReturnRejectedPromise } from "../packages/YipStackLib/util/misc";
 import { assumeTaggedRoleInCallerAccount, RoleName } from "./assumeRole"
 import { serialize } from "../packages/YipStackLib/util/misc";
 
-
 export enum TableName {
     UserData = "UserData",
     UserAddressData = "UserAddressData"
+}
+
+export enum PrimaryKeyAttName {
+  Sub = "sub"
 }
 
 export function assumeTaggedRoleAndNewClient(cognitoSub: string, roleName: RoleName){
@@ -50,12 +53,13 @@ type GetAllPartitionItemsInput = {
  * @param input DynamoDB table & partition key
  * @returns All items in the partition of the given table corresponding to the given parition key
  */
-export function getAllItemsInParition(ddbClient: AWS.DynamoDB.DocumentClient, input: GetAllPartitionItemsInput){
+export function getAllItemsInParition(ddbClient: AWS.DynamoDB.DocumentClient, input: GetAllPartitionItemsInput,
+  primaryKeyAttName: PrimaryKeyAttName){
   
   const queryParams : AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName: input.TableName,
     KeyConditionExpression: `#pk = :pk`,
-    ExpressionAttributeNames: { '#pk': 'pk' },
+    ExpressionAttributeNames: { '#pk': primaryKeyAttName},
     ExpressionAttributeValues: { ':pk': input.primaryKey}
   };
   
