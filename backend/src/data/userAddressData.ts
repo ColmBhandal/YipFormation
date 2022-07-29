@@ -1,5 +1,5 @@
 import { DocumentClient } from "aws-sdk/clients/dynamodb"
-import { isUseAddressData, UserAddressData } from "../packages/YipStackLib/types/userAddressData"
+import { isUserAddressData, UserAddressData } from "../packages/YipStackLib/types/userAddressData"
 import { logAndReturnRejectedPromise } from "../packages/YipStackLib/util/misc"
 import { assumeTaggedRoleAndNewClient, getAllItemsInParition, TableName } from "../util/ddb"
 import { serialize } from "../util/misc"
@@ -18,5 +18,5 @@ export function getUserAddressData(cognitoSub: string) : Promise<UserAddressData
 }
 
 function getUserAddressDataFromRawResponse(itemList: DocumentClient.ItemList){
-    return itemList.filter(isUseAddressData)
+    return itemList.filter(isUserAddressData)
 }
